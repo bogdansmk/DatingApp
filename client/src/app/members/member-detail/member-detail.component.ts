@@ -10,7 +10,6 @@ import { PresenceService } from 'src/app/_services/presence.service';
 import { AccountService } from 'src/app/_services/account.service';
 import { User } from 'src/app/_models/user';
 import { take } from 'rxjs/operators';
-import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-member-detail',
@@ -26,9 +25,9 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   user: User;
 
-  constructor(public presence: PresenceService, private route: ActivatedRoute,
+  constructor(public presence: PresenceService, private route: ActivatedRoute, 
     private messageService: MessageService, private accountService: AccountService,
-    private router: Router, private memberService: MembersService, private toastr: ToastrService) {
+    private router: Router) { 
       this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     }
@@ -54,12 +53,6 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     ]
 
     this.galleryImages = this.getImages();
-  }
-
-  like(username: string) {
-    return this.memberService.addLike(username).subscribe(() => {
-      this.toastr.success('You have liked ' + this.member.knownAs);
-    })
   }
 
   getImages(): NgxGalleryImage[] {

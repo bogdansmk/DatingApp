@@ -21,28 +21,18 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
-        private readonly IUserService _userService;
         private readonly IUnitOfWork _unitOfWork;
-
         public UsersController(IUnitOfWork unitOfWork, IMapper mapper,
-            IPhotoService photoService, IUserService userService)
+            IPhotoService photoService)
         {
             _unitOfWork = unitOfWork;
             _photoService = photoService;
-            _userService = userService;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
-            GetMembersResult result = _userService.GetMembers(userParams);
-
-            if (!result.IsValid)
-            {
-                return BadRequest(result.Message);
-            }
-
             var gender = await _unitOfWork.UserRepository.GetUserGender(User.GetUsername());
             userParams.CurrentUsername = User.GetUsername();
 
