@@ -7,6 +7,7 @@ import { UserParams } from 'src/app/_models/userParams';
 import { AccountService } from 'src/app/_services/account.service';
 import { take } from 'rxjs/operators';
 import { User } from 'src/app/_models/user';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-member-list',
@@ -30,10 +31,11 @@ export class MemberListComponent implements OnInit {
 
   loadMembers() {
     this.memberService.setUserParams(this.userParams);
-    this.memberService.getMembers(this.userParams).subscribe(response => {
+    this.memberService.getMembers(this.userParams).subscribe(
+      response => {
       this.members = response.result;
       this.pagination = response.pagination;
-    })
+    });
   }
 
   resetFilters() {
@@ -45,5 +47,15 @@ export class MemberListComponent implements OnInit {
     this.userParams.pageNumber = event.page;
     this.memberService.setUserParams(this.userParams);
     this.loadMembers();
+  }
+
+  onChange(event: any) {
+    if (event.target.value < +event.target.min || event.target.value > +event.target.max) {
+      this.userParams[event.target.name] = event.target.name === 'minAge' ? +event.target.min : +event.target.max;
+    }
+
+    if (this.userParams.minAge > this.userParams.maxAge) {
+      [this.userParams.minAge, this.userParams.maxAge] = [this.userParams.maxAge, this.userParams.minAge];
+    }
   }
 }
